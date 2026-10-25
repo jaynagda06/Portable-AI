@@ -1,0 +1,19 @@
+# Downloaded payloads — rebuild with tools/fetch-runtime.ps1 and tools/fetch-model.ps1
+/models/
+/runtime/
+*.gguf
+
+# Local state (generated on first run)
+/config/config.json
+/data/
+/logs/
+
+# Python / OS noise
+__pycache__/
+*.py[cod]
+Thumbs.db
+.DS_Store
+
+# Test and deploy artifacts
+/build/
+*.log

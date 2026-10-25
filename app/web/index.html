@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Portable AI</title>
+<link rel="icon" href="/static/favicon.svg">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="app">
+  <aside class="rail">
+    <div class="brand">
+      <div class="logo">◆</div>
+      <div class="brand-text"><b>Portable AI</b><small>offline analyst</small></div>
+    </div>
+    <button class="new-chat" id="btnNewChat">
+      <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> New chat
+    </button>
+    <nav class="nav">
+      <button class="nav-item active" data-view="chat">
+        <svg viewBox="0 0 24 24"><path d="M21 12a8 8 0 1 1-3.1-6.3L21 5l-.7 3.1A8 8 0 0 1 21 12Z"/><path d="M8 11h8M8 14h5"/></svg>Chat
+      </button>
+      <button class="nav-item" data-view="lab">
+        <svg viewBox="0 0 24 24"><path d="M8 4h8v4l3 6v5a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-5l3-6Z"/><path d="M9 14h6"/></svg>Binary Lab
+      </button>
+      <button class="nav-item" data-view="library">
+        <svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h4v18H6a2 2 0 0 1-2-2Z"/><path d="M10 3h4v18h-4z"/><path d="M14 4l4 1-3 16-4-1"/></svg>Library
+      </button>
+      <button class="nav-item" data-view="settings">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-2.9 1.2V21a2 2 0 1 1-4 0v-.1A1.7 1.7 0 0 0 7 19.4a1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A1.7 1.7 0 0 0 3 15a1.7 1.7 0 0 0-1.6-1H1.3a2 2 0 1 1 0-4h.1A1.7 1.7 0 0 0 3 9a1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1A1.7 1.7 0 0 0 9 3a1.7 1.7 0 0 0 1-1.6V1.3a2 2 0 1 1 4 0v.1A1.7 1.7 0 0 0 15 3a1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1A1.7 1.7 0 0 0 21 9c.2.6.7 1 1.3 1h.4a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.6 1Z"/></svg>Settings
+      </button>
+    </nav>
+    <div class="chat-list" id="chatList"></div>
+    <div class="rail-foot">
+      <div class="status-pill" id="statusPill"><span class="dot"></span><span id="statusText">connecting</span></div>
+      <div class="tiny muted" id="statusSub">local · offline</div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <h1 id="viewTitle">Chat</h1>
+        <p class="sub" id="viewSub">Ask about a binary, your documents, or Windows internals</p>
+      </div>
+      <div class="top-actions">
+        <span class="chip" id="modelChip" hidden></span>
+        <button class="ghost" id="btnHelp" title="Help">?</button>
+      </div>
+    </header>
+
+    <!-- ================= CHAT ================= -->
+    <section class="view active" id="view-chat">
+      <div class="messages" id="messages"></div>
+      <div class="composer">
+        <div class="composer-box">
+          <textarea id="input" rows="1" placeholder="Ask anything…  (Enter to send, Shift+Enter for newline)"></textarea>
+          <div class="composer-row">
+            <label class="toggle" title="Retrieve passages from your indexed documents">
+              <input type="checkbox" id="useLib"><span class="track"></span>
+              <span>Use library</span>
+            </label>
+            <span class="spacer"></span>
+            <button class="ghost small" id="btnStop" hidden>Stop</button>
+            <button class="primary" id="btnSend">Send</button>
+          </div>
+        </div>
+        <div class="tiny muted center">Runs fully on this machine · no cloud calls · no telemetry</div>
+      </div>
+    </section>
+
+    <!-- ================= BINARY LAB ================= -->
+    <section class="view" id="view-lab">
+      <div class="card">
+        <div class="card-head">
+          <h2>Analyze a binary</h2>
+          <span class="chip quiet">static · read-only · never executed</span>
+        </div>
+        <div class="drop" id="drop">
+          <input type="file" id="fileInput" hidden accept=".exe,.dll,.sys,.scr,.ocx,.cpl,.bin,.elf,.so,.pdf,.zip">
+          <svg viewBox="0 0 24 24" class="drop-ico"><path d="M12 16V4m0 0L7 9m5-5 5 5"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+          <div class="drop-title">Drop an EXE, DLL, SYS or any file</div>
+          <div class="tiny muted" id="dropSub">or click to choose · up to 512 MB</div>
+        </div>
+        <div class="or"><span>or analyze a file already on this PC</span></div>
+        <div class="row">
+          <input id="pathInput" class="input mono" placeholder="C:\Windows\System32\notepad.exe">
+          <button class="primary" id="btnPath">Analyze path</button>
+        </div>
+        <p class="tiny muted">Hashes, PE headers, sections, imports, exports, resources, version info, manifest,
+          embedded files, strings and entry-point disassembly. The file is opened read-only.</p>
+      </div>
+
+      <div id="reportArea" hidden></div>
+    </section>
+
+    <!-- ================= LIBRARY ================= -->
+    <section class="view" id="view-library">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head"><h2>Add documents</h2></div>
+          <div class="drop small" id="docDrop">
+            <input type="file" id="docInput" hidden multiple accept=".pdf,.docx,.pptx,.xlsx,.txt,.md,.json,.csv,.log,.html,.py,.js,.ts,.cs,.c,.cpp,.ps1">
+            <div class="drop-title">Drop PDFs, notes, docs or source files</div>
+            <div class="tiny muted">PDF · DOCX · PPTX · XLSX · MD · TXT · code</div>
+          </div>
+          <div class="or"><span>or index a folder on this PC</span></div>
+          <div class="row">
+            <input id="folderInput" class="input mono" placeholder="D:\Notes">
+            <button class="primary" id="btnFolder">Index folder</button>
+          </div>
+          <div class="tiny muted" id="docProgress"></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h2>Search library</h2><span class="chip quiet" id="libStats">0 docs</span></div>
+          <div class="row">
+            <input id="libQuery" class="input" placeholder="Search your documents…">
+            <button class="primary" id="btnSearch">Search</button>
+          </div>
+          <div id="searchResults" class="results"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h2>Indexed documents</h2>
+          <div class="row tight">
+            <button class="ghost small" id="btnReembed">Re-embed all</button>
+            <button class="ghost small" id="btnRefreshDocs">Refresh</button>
+          </div>
+        </div>
+        <div id="docTable" class="table-wrap"><div class="tiny muted">Loading…</div></div>
+      </div>
+    </section>
+
+    <!-- ================= SETTINGS ================= -->
+    <section class="view" id="view-settings">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head"><h2>Model runtime</h2><span class="chip" id="rtChip">…</span></div>
+          <div class="kv" id="rtInfo"></div>
+          <div class="row tight">
+            <button class="primary" id="btnRestartModel">Restart model</button>
+            <button class="ghost" id="btnStopModel">Stop</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h2>Model settings</h2></div>
+          <label class="field">Model file on the stick
+            <select id="cfgModel" class="input"></select>
+          </label>
+          <div class="grid-2 tight">
+            <label class="field">Context length
+              <input id="cfgCtx" class="input" type="number" min="1024" max="65536" step="512">
+            </label>
+            <label class="field">GPU layers
+              <input id="cfgGpu" class="input" type="number" min="0" max="999">
+            </label>
+          </div>
+          <div class="grid-2 tight">
+            <label class="field">Backend
+              <select id="cfgBackend" class="input">
+                <option value="auto">auto (Vulkan → CPU)</option>
+                <option value="vulkan">Vulkan (portable GPU)</option>
+                <option value="cpu">CPU only</option>
+              </select>
+            </label>
+            <label class="field">Use existing server
+              <select id="cfgMode" class="input">
+                <option value="auto">auto</option>
+                <option value="bundled">USB model only</option>
+                <option value="external">LM Studio only</option>
+              </select>
+            </label>
+          </div>
+          <label class="field">Temperature <span class="tiny muted" id="tempVal"></span>
+            <input id="cfgTemp" type="range" min="0" max="1.5" step="0.05">
+          </label>
+          <button class="primary" id="btnSaveCfg">Save &amp; restart</button>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h2>LAN access</h2><span class="chip quiet" id="lanChip">off</span></div>
+          <p class="tiny muted">Off by default. When enabled, the server listens on all interfaces and requires
+            a token. Use only on networks you control. A firewall prompt will appear on first run.</p>
+          <div class="kv" id="lanInfo"></div>
+          <div class="row tight">
+            <button class="ghost small" id="btnLanToggle">Enable / disable</button>
+            <button class="ghost small" id="btnCopyLan">Copy URL</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h2>Hardware &amp; storage</h2></div>
+          <div class="kv" id="hwInfo"></div>
+          <div class="tiny muted" id="storageInfo"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h2>About this build</h2></div>
+        <div class="kv" id="aboutInfo"></div>
+        <p class="tiny muted">Portable AI runs from this folder. Move the folder to any Windows PC with
+          x64 Windows 10/11 and start it again — no installation, no Python required on the host.</p>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="/static/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+PORTABLE AI - START HERE
+=======================
+
+1. Double-click  Start-AI.cmd
+2. Wait for your browser to open (http://127.0.0.1:8099).
+3. Ask a question, or open "Binary Lab" to analyze an .exe/.dll.
+
+Stop it with  Stop-AI.cmd  (or close the console window).
+
+Works offline. Nothing is installed on this PC.
+First start may take 10-30 seconds from a USB drive.
+
+Phone/tablet on the same Wi-Fi? Use Start-AI-LAN.cmd and open the
+token URL shown in the console or in Settings -> LAN access.
+
+Check the install:  powershell -ExecutionPolicy Bypass -File tools\verify-install.ps1
+
+Docs: README.md and the docs folder.
+Safety: analyze only files you own or are authorized to inspect.
+This tool does not help bypass exams, proctoring, DRM or access controls.
