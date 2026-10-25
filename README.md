@@ -223,5 +223,6 @@ static inspection of a copy you may test) and what is not.
 - Python 3.13 — PSF license (`runtime\python\LICENSE.txt`).
 - pefile (MIT), pypdf (BSD-3-Clause), capstone (BSD-3-Clause).
 
-Model and runtime binaries are redistributed here for offline use; keep their license files with
-the drive.
+The prebuilt USB build redistributes the model and runtime binaries for offline use; keep their
+license files with the drive. They are not stored in this Git repository — use the fetch scripts
+above to rebuild them.
